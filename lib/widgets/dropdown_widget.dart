@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class DropdownWidget extends StatefulWidget {
-  const DropdownWidget({super.key, required this.list, required this.onChanged});
+  const DropdownWidget({
+    super.key,
+    required this.list,
+    required this.onChanged,
+  });
 
   final List<String> list;
   final Function(String) onChanged;
@@ -29,12 +33,14 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         height: 0,
         color: Colors.deepPurpleAccent,
       ),
-      onChanged: widget.onChanged != null ? (String? value) {
-        setState(() {
-          dropdownValue = value!;
-        });
-        widget.onChanged!(value!);
-      } : null,
+      onChanged: widget.onChanged != null
+          ? (String? value) {
+              setState(() {
+                dropdownValue = value!;
+              });
+              widget.onChanged!(value!);
+            }
+          : null,
       items: widget.list.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,

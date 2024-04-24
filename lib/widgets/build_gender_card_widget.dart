@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:bmi_calculator_app/constants.dart';
 
 class BuildGenderCardWidget extends StatelessWidget {
-  const BuildGenderCardWidget(
-      {super.key, required this.onTap, required this.size, required this.gender, required this.selectedGender,});
+  const BuildGenderCardWidget({
+    super.key,
+    required this.onTap,
+    required this.size,
+    required this.gender,
+    required this.selectedGender,
+  });
 
   final VoidCallback onTap;
   final Size size;
@@ -22,9 +27,7 @@ class BuildGenderCardWidget extends StatelessWidget {
           color: pColorWhiteLight,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selectedGender == gender
-                ? pColorBlue
-                : pColorWhiteLight,
+            color: selectedGender == gender ? pColorBlue : pColorWhiteLight,
             width: 3,
           ),
           boxShadow: [
