@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bmi_calculator_app/constants.dart';
 import 'package:bmi_calculator_app/models/bmi_person_model.dart';
 import 'package:bmi_calculator_app/widgets/base_widget.dart';
 import 'package:bmi_calculator_app/widgets/progress_bar_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ResultScreen extends StatelessWidget {
   ResultScreen({super.key, required this.bmiList});
@@ -73,7 +78,9 @@ class ResultScreen extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        const ProgressBarWidget(),
+                        ProgressBarWidget(
+                          bmiResult: bmiList[0].bmiResult,
+                        ),
                         const Spacer(),
                         Text(
                           result.category,
@@ -117,11 +124,14 @@ class ResultScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                var url = Uri.parse(
+                                    'https://www.google.com/search?q=Calculate+${bmiList[0].bmiResult}+BMI+${bmiList[0].genderBmi}');
+                                launchUrl(url);
+                              },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(15.0),
+                                  borderRadius: BorderRadius.circular(15.0),
                                 ),
                                 padding: const EdgeInsets.all(0),
                               ),
@@ -130,8 +140,7 @@ class ResultScreen extends StatelessWidget {
                                 height: 50,
                                 decoration: BoxDecoration(
                                   color: pColorBlue,
-                                  borderRadius:
-                                      BorderRadius.circular(15.0),
+                                  borderRadius: BorderRadius.circular(15.0),
                                 ),
                                 child: const Center(
                                   child: Row(
@@ -170,11 +179,13 @@ class ResultScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            onExitPressed(context);
+                          },
                           color: pColorBlue,
                           iconSize: 30,
                           padding: const EdgeInsets.all(15.0),
-                          icon: const Icon(Icons.share_rounded),
+                          icon: const Icon(Icons.exit_to_app_rounded),
                         ),
                       ),
                       Container(
@@ -204,12 +215,56 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  BmiCategory getBmiResult(double bmi){
-    for(var item in bmiCategory){
-      if(item.lowRange <= bmi && item.highRange >= bmi){
+  BmiCategory getBmiResult(double bmi) {
+    for (var item in bmiCategory) {
+      if (item.lowRange <= bmi && item.highRange >= bmi) {
         return item;
       }
     }
     return BmiCategory('', 0, 0, '');
+  }
+
+  void onExitPressed(context) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      animType: AnimType.scale,
+      headerAnimationLoop: false,
+      alignment: Alignment.center,
+      title: 'Exit',
+      desc: 'Do you exit the application?',
+      dialogBackgroundColor: pColorBlueLighter,
+      titleTextStyle: const TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),
+      descTextStyle: const TextStyle(
+        color: pColorBlue,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      btnOkText: 'Exit',
+      buttonsTextStyle: const TextStyle(
+        color: pColorBlueLight,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      btnOkOnPress: () {
+        onYesPressed(context);
+      },
+      btnCancelOnPress: () {},
+    ).show();
+  }
+
+  void onYesPressed(context) {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else if (Platform.isIOS) {
+      exit(0);
+    } else {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
   }
 }
